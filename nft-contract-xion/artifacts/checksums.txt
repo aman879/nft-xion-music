@@ -1,0 +1,1 @@
+cc55d82ddb7dd71ee7652178301db57f882a7bf7f7f0072facf111e33fb70bb7  nft_contract_xion.wasm

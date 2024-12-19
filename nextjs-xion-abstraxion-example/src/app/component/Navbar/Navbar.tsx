@@ -4,8 +4,6 @@ interface NavbarProps {
   onRouteChange: (route: string) => void;
   setShow: (show: boolean) => void;
   address: string | null;
-  isConnected: boolean;
-  isConnecting: boolean;
   Abstraxion: React.ComponentType<{ onClose: () => void }>;
 }
 
@@ -13,8 +11,6 @@ const Navbar: React.FC<NavbarProps> = ({
   onRouteChange,
   setShow,
   address,
-  isConnected,
-  isConnecting,
   Abstraxion,
 }) => {
   return (

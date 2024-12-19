@@ -1,12 +1,11 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Abstraxion,
   useAbstraxionAccount,
   useModal,
   useAbstraxionSigningClient,
 } from "@burnt-labs/abstraxion";
-import { Button } from "@burnt-labs/ui";
 import Navbar from "@/app/component/Navbar/Navbar";
 import "./App.css";
 import address from "./contract/info.json";
@@ -24,11 +23,28 @@ const pinata = new PinataSDK({
 
 const contractAddress = address.address;
 
+interface NFT {
+  id: number;
+  owner: string;
+  name: string;
+  description: string;
+  price: string;
+  video: string;
+  timeswatched: number;
+}
+
+interface ResponseData {
+  name: string,
+  description: string,
+  price: string,
+  video: string,
+}
+
 export default function Page() {
   const [route, setRoute] = useState("home");
   const [isMinting, setIsMinting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [nfts, setNfts]: any[] = useState(null);
+  const [nfts, setNfts] = useState<NFT [] | null>(null);
   const [shouldFetchNfts, setShouldFetchNfts] = useState(true);
   const [canPlay, setCanPlay] = useState(false);
   const [url, setUrl] = useState("");
@@ -36,7 +52,6 @@ export default function Page() {
 
   const {
     isConnected,
-    isConnecting,
   } = useAbstraxionAccount();
   const {data: account} = useAbstraxionAccount();
   
@@ -53,7 +68,7 @@ export default function Page() {
               get_nft_counter: {},
             })
           );
-          const nftDataArray: any[] = [];
+          const nftDataArray: NFT[] = [];
           for (let i = 0; i < totalCount; i++) {
             const nftRes = await client?.queryContractSmart(contractAddress, {
               get_nft: { id: i },
@@ -62,7 +77,12 @@ export default function Page() {
             const response = await pinata.gateways.get(
               `https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${nftResFil.uri}`
             );
-            const data: any = response.data;
+            const data = response.data as ResponseData | Blob;
+
+            if (data instanceof Blob) {
+              toast.error("Received Blob instead of expected JSON data.");
+              return;
+            }
   
             const nftData = {
               id: nftResFil.nft_id,
@@ -238,8 +258,6 @@ export default function Page() {
             onRouteChange={onRouteChange}
             setShow={setShow}
             address={account.bech32Address}
-            isConnected={isConnected}
-            isConnecting={isConnecting}
             Abstraxion={Abstraxion}
             />
           {

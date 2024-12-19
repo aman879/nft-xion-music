@@ -3,17 +3,17 @@ import CardList from "../CardList/CardList";
 import "../../App.css"
 
 interface NFT {
-  id: string;
+  id: number;
   owner: string;
   name: string;
   description: string;
-  video: string;
   price: string;
+  video: string;
   timeswatched: number;
 }
 
 interface ExploreProps {
-  nfts: NFT[];
+  nfts: NFT[] | null;
   isConnected: boolean;
   isLoading: boolean;
   canPlay: boolean;
